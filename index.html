@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>pink loop</title>
+  <title>pink space</title>
   <style>
     html, body {
       height: 100%;
@@ -11,66 +11,46 @@
     }
     body {
       background: #ff00ff; /* 真っピンク */
-      display: grid;
-      place-items: center;
       overflow: hidden;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* テキストは表示しない（アクセシビリティ用のラベルは別途付ける） */
-    .btn {
-      width: min(28vmin, 180px);
-      height: min(28vmin, 180px);
-      border-radius: 999px;
-      border: 3px solid rgba(0,0,0,0.85);
-      background: rgba(255,255,255,0.22);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      box-shadow: 14px 14px 0 rgba(0,0,0,0.85);
+    /* 左上の小さな ▶︎ */
+    #trigger {
+      position: fixed;
+      top: 14px;
+      left: 14px;
+      font-size: 14px;      /* 小さめ */
+      font-family: system-ui, -apple-system, "Hiragino Sans", sans-serif;
+      color: rgba(0,0,0,0.85);
       cursor: pointer;
-      display: grid;
-      place-items: center;
-      transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+      opacity: 0.7;
+      transition: opacity 120ms ease;
     }
-    .btn:active {
-      transform: translate(6px, 6px);
-      box-shadow: 8px 8px 0 rgba(0,0,0,0.85);
-      background: rgba(255,255,255,0.28);
+    #trigger:hover {
+      opacity: 1;
     }
 
-    /* アイコン（再生＝三角、停止＝四角） */
-    .icon {
-      width: 0;
-      height: 0;
-      border-top: 22px solid transparent;
-      border-bottom: 22px solid transparent;
-      border-left: 36px solid rgba(0,0,0,0.85);
-      transform: translateX(4px);
-      transition: all 120ms ease;
+    /* 再生中はちょっと存在感を消す */
+    .playing {
+      opacity: 0.35;
     }
 
-    .playing .icon {
-      width: 30px;
-      height: 30px;
-      border: none;
-      background: rgba(0,0,0,0.85);
-      transform: none;
-      border-radius: 4px;
-    }
-
-    /* 画面の呼吸感：うっすら波紋（文字なし） */
+    /* ほんの呼吸 */
     .halo {
       position: absolute;
       inset: -40vmin;
-      background: radial-gradient(circle at center, rgba(255,255,255,0.18), rgba(255,255,255,0) 55%);
-      animation: breathe 4.5s ease-in-out infinite;
+      background: radial-gradient(circle at center,
+        rgba(255,255,255,0.18),
+        rgba(255,255,255,0) 55%);
+      animation: breathe 5s ease-in-out infinite;
       pointer-events: none;
       mix-blend-mode: screen;
     }
     @keyframes breathe {
-      0%, 100% { transform: scale(0.92); opacity: 0.55; }
-      50%      { transform: scale(1.06); opacity: 0.85; }
+      0%,100% { transform: scale(0.95); opacity: 0.5; }
+      50%     { transform: scale(1.05); opacity: 0.85; }
     }
   </style>
 </head>
@@ -78,41 +58,13 @@
 <body>
   <div class="halo" aria-hidden="true"></div>
 
-  <!-- 文字は出さないけど、スクリーンリーダー向けラベルは付ける -->
-  <button id="toggle" class="btn" aria-label="toggle audio" title="">
-    <div class="icon" aria-hidden="true"></div>
-  </button>
+  <!-- 見えるのはこれだけ -->
+  <div id="trigger" aria-label="toggle audio">▶︎</div>
 
-  <!-- 音ファイル：同じフォルダに audio.mp3 を置く -->
-  <audio id="audio" src="audio.mp3" preload="auto" loop playsinline></audio>
+  <!-- 音ファイル：同じフォルダに audio.mp3 -->
+  <audio id="audio" src="audio.mp3" loop playsinline preload="auto"></audio>
 
   <script>
-    const btn = document.getElementById("toggle");
-    const audio = document.getElementById("audio");
+    const t = document.getElementById("trigger");
+    con
 
-    // クリック（タップ）で再生/停止
-    btn.addEventListener("click", async () => {
-      try {
-        if (audio.paused) {
-          await audio.play();           // iOS対策：ユーザー操作内で play() する
-          btn.classList.add("playing");
-        } else {
-          audio.pause();
-          btn.classList.remove("playing");
-        }
-      } catch (e) {
-        // 自動再生ブロック等が起きたときでも無言で耐える（文字を出さない）
-        console.warn(e);
-      }
-    });
-
-    // もし別タブに行ったら勝手に止める（趣味の安全装置）
-    document.addEventListener("visibilitychange", () => {
-      if (document.hidden && !audio.paused) {
-        audio.pause();
-        btn.classList.remove("playing");
-      }
-    });
-  </script>
-</body>
-</html>
