@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ja">
 <head>
-  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -22,26 +22,31 @@
 <script>
   const t = document.getElementById("trigger");
   const a = document.getElementById("audio");
-  const log = (m) => (document.getElementById("log").textContent = m);
 
   t.addEventListener("click", async () => {
     try {
       if (a.paused) {
         await a.play();
-        log("playing ▶︎");
+        t.textContent = "■";
+        t.style.opacity = "0.35";
       } else {
         a.pause();
-        log("paused ■");
+        t.textContent = "▶︎";
+        t.style.opacity = "0.8";
       }
     } catch (e) {
-      log("error: " + (e?.name || e));
       console.warn(e);
     }
   });
 
+  // 再生状態が外部要因で変わっても同期する
+  a.addEventListener("play", () => { t.textContent = "■"; t.style.opacity = "0.35"; });
+  a.addEventListener("pause", () => { t.textContent = "▶︎"; t.style.opacity = "0.8"; });
+
   a.muted = false;
   a.volume = 1.0;
 </script>
+  
 </body>
 </html>
 
