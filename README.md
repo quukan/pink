@@ -1,4 +1,4 @@
-# 空間PINK
+# 空間
 
-https://pink-ma.github.io/pink/
+https://quukan.github.io/
 
