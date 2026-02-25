@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>空間PINK</title>
+
+  <link rel="icon" href="./favicon.ico?v=3" sizes="32x32" type="image/x-icon">
+  <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png?v=3">
+
+  <style>
+    html, body { height: 100%; margin: 0; }
+    body {
+      background:#FF4F9A;
+      overflow:hidden;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* 左上の“痕跡”たち */
+    .dock {
+      position: fixed;
+      top: 14px;
+      left: 14px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .t {
+      font-size: 14px;
+      font-family: system-ui, -apple-system, "Hiragino Sans", sans-serif;
+      color: rgba(0,0,0,.85);
+      cursor: pointer;
+      opacity: 0.85;
+      transition: opacity 120ms ease, transform 120ms ease;
+      line-height: 1;
+    }
+
+    .t:hover { opacity: 1; transform: translateY(-1px); }
+
+    /* 再生中は存在感を消す（でも触れる） */
+    .t.playing { opacity: 0.35; }
+
+    /* モバイルで押しやすい “見えない当たり判定” */
+    .t::before{
+      content:"";
+      position:absolute;
+      inset:-10px;
+    }
+
+    /* 位置ズレ防止 */
+    .t { position: relative; }
+  </style>
+</head>
+
+<body>
+  <div class="dock" aria-label="audio controls">
+    <!-- data-audio に音ファイル名（相対パス） -->
+    <div class="t" data-audio="a.mp3" aria-label="track A">◼︎</div>
+    <div class="t" data-audio="b.mp3" aria-label="track B">◼︎</div>
+    <div class="t" data-audio="c.mp3" aria-label="track C">◼︎</div>
+  </div>
+
+  <script>
+    // クリック/タップした“痕跡”が、自分専用のAudioを持つ
+    const tracks = new Map(); // element -> audio
+
+    function getAudioFor(el) {
+      if (tracks.has(el)) return tracks.get(el);
+
+      const src = el.getAttribute("data-audio");
+      const a = new Audio(src);
+      a.loop = true;
+      a.preload = "auto";
+      a.muted = false;
+      a.volume = 1.0;
+
+      // 状態同期（外部要因で止まっても見た目が戻る）
+      a.addEventListener("play",  () => el.classList.add("playing"));
+      a.addEventListener("pause", () => el.classList.remove("playing"));
+      a.addEventListener("ended", () => el.classList.remove("playing"));
+
+      tracks.set(el, a);
+      return a;
+    }
+
+    async function toggle(el) {
+      const a = getAudioFor(el);
+      try {
+        if (a.paused) {
+          await a.play();  // iOS対策：ユーザー操作内で
+        } else {
+          a.pause();
+        }
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+
+    document.querySelectorAll(".t").forEach(el => {
+      el.addEventListener("click", () => toggle(el));
+      el.addEventListener("touchend", (ev) => { ev.preventDefault(); toggle(el); }, { passive:false });
+    });
+
+    // タブを離れたら全部止める（静かなマナー）
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) return;
+      for (const a of tracks.values()) a.pause();
+      document.querySelectorAll(".t").forEach(el => el.classList.remove("playing"));
+    });
+  </script>
+</body>
+</html>
