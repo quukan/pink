@@ -9,6 +9,19 @@
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 
   <style>
+#pinklink{
+  position:fixed;
+  right:40px;
+  bottom:40px;
+  z-index:5;
+}
+
+#pinklink img{
+  width:500px;
+  height:auto;
+  display:block;
+}
+    
 html, body {
   height: 100%;
   margin: 0;
@@ -90,6 +103,11 @@ body::after{
 </head>
 
 <body>
+
+  <a href="https://akikoyamane.com" target="_blank" id="pinklink">
+  <img src="pink.jpg" alt="pink">
+</a>
+  
   <div id="stack">
     <div class="trigger" data-i="0">▶︎</div>
     <div class="trigger" data-i="1">▶︎</div>
