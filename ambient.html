@@ -3,10 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#ff2f93">
   <title>空間プロト</title>
 
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+
 
   <style>
 #pinklink{
@@ -28,7 +30,6 @@ html, body{
   margin: 0;
 }
 
-/* 背景は “html” に持たせるのが最強（iOS/Safariの白フチ対策） */
 html{
   background:
     radial-gradient(1200px 900px at 30% 25%, rgba(255,255,255,.22), rgba(255,255,255,0) 60%),
@@ -41,6 +42,9 @@ body{
   background: transparent; 
   overflow: hidden;
   user-select: none;
+  position: fixed;
+  inset: 0;
+}
 }
 
 /* うっすいフィルムノイズ（body{}の外に出す） */
@@ -77,17 +81,17 @@ body::after{
       top:14px; left:14px;
       display:flex;
       flex-direction:column;
-      gap:10px;
+      gap:4px;
       z-index:10;
     }
 
     .trigger{
-      font-size:14px;
+      font-size:12px;
       cursor:pointer;
       color:rgba(0,0,0,.86);
       opacity:.82;
-      width:24px; /* クリックしやすく */
-      height:22px;
+      width:20px;
+      height:20px;
       display:flex;
       align-items:center;
       justify-content:flex-start;
