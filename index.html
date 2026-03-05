@@ -4,13 +4,48 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#ff2f93">
-  <title>空間</title>
+  <title>空間プロト</title>
 
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 
 
   <style>
+html, body{
+  height:100%;
+  margin:0;
+}
+
+body{
+  overflow:hidden;
+  user-select:none;
+  position:fixed;
+  inset:0;
+  background:#ff2f93; /* 最低ライン：ここだけでもピンク */
+}
+
+/* 背景を “1枚” に統合（安定最優先） */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(1200px 900px at 30% 25%, rgba(255,255,255,.22), rgba(255,255,255,0) 60%),
+    radial-gradient(900px 700px at 70% 65%, rgba(255,255,255,.12), rgba(255,255,255,0) 55%),
+    linear-gradient(160deg, #ff2f93 0%, #ff4fb2 35%, #ff1f7a 70%, #ff5fc4 100%),
+    repeating-linear-gradient(
+      0deg,
+      rgba(0,0,0,.02) 0px,
+      rgba(0,0,0,.02) 1px,
+      rgba(255,255,255,.015) 2px,
+      rgba(255,255,255,.015) 3px
+    );
+  opacity:1;
+  filter: blur(0px); /* ここは好みで。重ければ0のまま */
+}
+
+/* 右下画像 */
 #pinklink{
   position:fixed;
   right:40px;
@@ -18,101 +53,37 @@
   transform:translateY(-50%);
   z-index:5;
 }
-
 #pinklink img{
   width:400px;
+  max-width:60vw;
   height:auto;
   display:block;
 }
-    
-html, body{
-  height: 100%;
-  margin: 0;
+
+/* ボタン */
+#stack{
+  position:fixed;
+  top:14px; left:14px;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  z-index:10;
 }
-
-html{
-  background:
-    radial-gradient(1200px 900px at 30% 25%, rgba(255,255,255,.22), rgba(255,255,255,0) 60%),
-    radial-gradient(900px 700px at 70% 65%, rgba(255,255,255,.12), rgba(255,255,255,0) 55%),
-    linear-gradient(160deg, #ff2f93 0%, #ff4fb2 35%, #ff1f7a 70%, #ff5fc4 100%);
+.trigger{
+  font-size:12px;
+  width:16px;
+  height:16px;
+  line-height:1;
+  cursor:pointer;
+  color:rgba(0,0,0,.86);
+  opacity:.82;
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  -webkit-tap-highlight-color:transparent;
+  text-shadow:0 0 10px rgba(255,255,255,.18);
 }
-
-body{
-  min-height: 100vh;
-  background: transparent; 
-  overflow: hidden;
-  user-select: none;
-  position: fixed;
-  inset: 0;
-}
-}
-
-/* うっすいフィルムノイズ（body{}の外に出す） */
-body::before{
-  content:"";
-  position: fixed;
-  inset: -20%;
-  pointer-events: none;
-  background:
-    repeating-linear-gradient(
-      0deg,
-      rgba(0,0,0,.035) 0px,
-      rgba(0,0,0,.035) 1px,
-      rgba(255,255,255,.02) 2px,
-      rgba(255,255,255,.02) 3px
-    );
-  mix-blend-mode: soft-light;
-  opacity: .25;
-  transform: rotate(2deg);
-}
-
-/* グロー（body{}の外に出す） */
-body::after{
-  content:"";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background: radial-gradient(800px 600px at 50% 45%, rgba(255,110,210,.28), rgba(255,110,210,0) 70%);
-  filter: blur(12px);
-  opacity: .8;
-}
-    #stack{
-      position:fixed;
-      top:14px; left:14px;
-      display:flex;
-      flex-direction:column;
-      gap:4px;
-      z-index:10;
-    }
-
-    .trigger{
-      font-size:12px;
-      cursor:pointer;
-      color:rgba(0,0,0,.86);
-      opacity:.82;
-      width:20px;
-      height:20px;
-      display:flex;
-      align-items:center;
-      justify-content:flex-start;
-      -webkit-tap-highlight-color: transparent;
-      text-shadow: 0 0 10px rgba(255,255,255,.18);
-    }
-    .trigger.playing{ opacity:.35; }
-
-    #log{
-      position:fixed;
-      bottom:10px; left:10px; right:10px;
-      z-index:10;
-      font:12px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
-      background:rgba(255,255,255,.20);
-      border:1px solid rgba(0,0,0,.55);
-      padding:8px 10px;
-      border-radius:12px;
-      backdrop-filter: blur(6px);
-    }
-
-    body{ overscroll-behavior: none; }
+.trigger.playing{ opacity:.35; }
     
   </style>
 </head>
