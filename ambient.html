@@ -94,9 +94,9 @@
   </div>
 
   <!-- それぞれ別トラック。好きなだけ増やせる -->
+  <audio class="track" src="a.mp3" loop playsinline preload="auto"></audio>
   <audio class="track" src="b.mp3" loop playsinline preload="auto"></audio>
   <audio class="track" src="c.mp3" loop playsinline preload="auto"></audio>
-  <audio class="track" src="d.mp3" loop playsinline preload="auto"></audio>
 
   <div id="log">クリックで各レイヤーを再生/停止。重ねてOK。</div>
 
@@ -116,22 +116,19 @@
       t.classList.toggle("playing", playing);
     }
 
-    async function toggle(i){
-      const a = tracks[i];
-      try{
-        if (a.paused){
-          await a.play();
-          logEl.textContent = `layer ${i+1}: play (${a.getAttribute("src")})`;
-        } else {
-          a.pause();
-          logEl.textContent = `layer ${i+1}: stop`;
-        }
-        sync(i);
-      } catch(e){
-        console.warn(e);
-        logEl.textContent = "再生できなかった：iPhone等は“最初のユーザー操作”が必要。もう一度タップして。";
-      }
+async function toggle(i){
+  const a = tracks[i];
+  try{
+    if (a.paused){
+      await a.play();
+    } else {
+      a.pause();
     }
+    sync(i);
+  } catch(e){
+    console.warn(e);
+  }
+}
 
     triggers.forEach(t => {
       t.addEventListener("click", () => toggle(Number(t.dataset.i)));
