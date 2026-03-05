@@ -9,16 +9,18 @@
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 
   <style>
-    html, body { height: 100%; margin: 0; }
-    body {
-      overflow:hidden;
-      user-select:none;
+html, body {
+  height: 100%;
+  margin: 0;
+  background:
+    radial-gradient(1200px 900px at 30% 25%, rgba(255,255,255,.22), rgba(255,255,255,0) 60%),
+    radial-gradient(900px 700px at 70% 65%, rgba(255,255,255,.12), rgba(255,255,255,0) 55%),
+    linear-gradient(160deg, #ff2f93 0%, #ff4fb2 35%, #ff1f7a 70%, #ff5fc4 100%);
+}
 
-      background:
-        radial-gradient(1200px 900px at 30% 25%, rgba(255,255,255,.22), rgba(255,255,255,0) 60%),
-        radial-gradient(900px 700px at 70% 65%, rgba(255,255,255,.12), rgba(255,255,255,0) 55%),
-        linear-gradient(160deg, #ff2f93 0%, #ff4fb2 35%, #ff1f7a 70%, #ff5fc4 100%);
-    }
+body {
+  overflow:hidden;
+  user-select:none;
 
     /* うっすいフィルムノイズ */
     body::before{
@@ -98,12 +100,11 @@
   <audio class="track" src="b.mp3" loop playsinline preload="auto"></audio>
   <audio class="track" src="c.mp3" loop playsinline preload="auto"></audio>
 
-  <div id="log">クリックで各レイヤーを再生/停止。重ねてOK。</div>
 
   <script>
     const triggers = [...document.querySelectorAll(".trigger")];
     const tracks   = [...document.querySelectorAll(".track")];
-    const logEl    = document.getElementById("log");
+
 
     // 念のため
     tracks.forEach(a => { a.muted = false; a.volume = 1.0; });
