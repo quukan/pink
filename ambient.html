@@ -22,9 +22,11 @@
   display:block;
 }
     
-html, body {
-  height: 100%;
-  margin: 0;
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-1;
   background:
     radial-gradient(1200px 900px at 30% 25%, rgba(255,255,255,.22), rgba(255,255,255,0) 60%),
     radial-gradient(900px 700px at 70% 65%, rgba(255,255,255,.12), rgba(255,255,255,0) 55%),
