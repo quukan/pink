@@ -23,8 +23,13 @@
   display:block;
 }
     
-html {
-  height:100%;
+html, body{
+  height: 100%;
+  margin: 0;
+}
+
+/* 背景は “html” に持たせるのが最強（iOS/Safariの白フチ対策） */
+html{
   background:
     radial-gradient(1200px 900px at 30% 25%, rgba(255,255,255,.22), rgba(255,255,255,0) 60%),
     radial-gradient(900px 700px at 70% 65%, rgba(255,255,255,.12), rgba(255,255,255,0) 55%),
@@ -32,22 +37,18 @@ html {
 }
 
 body{
-  margin:0;
-  min-height:100vh;
-  overflow:hidden;
-  user-select:none;
+  min-height: 100vh;
+  background: transparent; 
+  overflow: hidden;
+  user-select: none;
 }
 
-body {
-  overflow:hidden;
-  user-select:none;
-}
-
-/* うっすいフィルムノイズ */
+/* うっすいフィルムノイズ（body{}の外に出す） */
 body::before{
   content:"";
-  position:fixed; inset:-20%;
-  pointer-events:none;
+  position: fixed;
+  inset: -20%;
+  pointer-events: none;
   background:
     repeating-linear-gradient(
       0deg,
@@ -57,20 +58,20 @@ body::before{
       rgba(255,255,255,.02) 3px
     );
   mix-blend-mode: soft-light;
-  opacity:.25;
+  opacity: .25;
   transform: rotate(2deg);
 }
 
-/* グロー */
+/* グロー（body{}の外に出す） */
 body::after{
   content:"";
-  position:fixed; inset:0;
-  pointer-events:none;
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
   background: radial-gradient(800px 600px at 50% 45%, rgba(255,110,210,.28), rgba(255,110,210,0) 70%);
   filter: blur(12px);
-  opacity:.8;
+  opacity: .8;
 }
-
     #stack{
       position:fixed;
       top:14px; left:14px;
