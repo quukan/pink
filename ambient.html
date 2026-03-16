@@ -9,8 +9,8 @@
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 
+<style>
 
-  <style>
 html, body{
   height:100%;
   margin:0;
@@ -21,10 +21,10 @@ body{
   user-select:none;
   position:fixed;
   inset:0;
-  background:#ff2f93; /* 最低ライン：ここだけでもピンク */
+  background:#ff2f93;
 }
 
-/* 背景を “1枚” に統合（安定最優先） */
+/* 背景 */
 body::before{
   content:"";
   position:fixed;
@@ -41,8 +41,6 @@ body::before{
       rgba(255,255,255,.015) 2px,
       rgba(255,255,255,.015) 3px
     );
-  opacity:1;
-  filter: blur(0px); /* ここは好みで。重ければ0のまま */
 }
 
 /* 右下画像 */
@@ -53,6 +51,7 @@ body::before{
   transform:translateY(-50%);
   z-index:5;
 }
+
 #pinklink img{
   width:400px;
   max-width:60vw;
@@ -60,19 +59,19 @@ body::before{
   display:block;
 }
 
-/* ボタン */
+/* トリガー群 */
 #stack{
   position:fixed;
-  top:14px; left:14px;
+  top:14px;
+  left:14px;
   display:flex;
   flex-direction:column;
   gap:4px;
   z-index:10;
 }
+
 .trigger{
   font-size:12px;
-  width:16px;
-  height:16px;
   line-height:1;
   cursor:pointer;
   color:rgba(0,0,0,.86);
@@ -82,70 +81,74 @@ body::before{
   justify-content:flex-start;
   -webkit-tap-highlight-color:transparent;
   text-shadow:0 0 10px rgba(255,255,255,.18);
+  transition: color .12s ease, opacity .12s ease;
 }
-.trigger.playing{ opacity:.35; }
-    
-  </style>
+
+/* 再生中 */
+.trigger.playing{
+  color:rgba(255,255,255,.9);
+  opacity:1;
+}
+
+</style>
 </head>
 
 <body>
 
-  <a href="https://akikoyamane.com" id="pinklink">
+<a href="https://akikoyamane.com" id="pinklink">
   <img src="pink.jpg" alt="pink">
 </a>
-  
-  <div id="stack">
-    <div class="trigger" data-i="0">▶︎</div>
-    <div class="trigger" data-i="1">▶︎</div>
-    <div class="trigger" data-i="2">▶︎</div>
-  </div>
 
-  <!-- それぞれ別トラック。好きなだけ増やせる -->
-  <audio class="track" src="a.mp3" loop playsinline preload="auto"></audio>
-  <audio class="track" src="b.mp3" loop playsinline preload="auto"></audio>
-  <audio class="track" src="c.mp3" loop playsinline preload="auto"></audio>
+<div id="stack">
+  <div class="trigger" data-i="0">fridge #1</div>
+  <div class="trigger" data-i="1">fridge #2</div>
+  <div class="trigger" data-i="2">fridge #3</div>
+</div>
 
+<audio class="track" src="a.mp3" loop playsinline preload="auto"></audio>
+<audio class="track" src="b.mp3" loop playsinline preload="auto"></audio>
+<audio class="track" src="c.mp3" loop playsinline preload="auto"></audio>
 
-  <script>
-    const triggers = [...document.querySelectorAll(".trigger")];
-    const tracks   = [...document.querySelectorAll(".track")];
+<script>
 
+const triggers = [...document.querySelectorAll(".trigger")];
+const tracks   = [...document.querySelectorAll(".track")];
 
-    // 念のため
-    tracks.forEach(a => { a.muted = false; a.volume = 1.0; });
+tracks.forEach(a=>{
+  a.muted=false;
+  a.volume=1.0;
+});
 
-    function sync(i){
-      const t = triggers[i];
-      const a = tracks[i];
-      const playing = !a.paused;
-      t.textContent = playing ? "■" : "▶︎";
-      t.classList.toggle("playing", playing);
-    }
+function sync(i){
+  const t=triggers[i];
+  const a=tracks[i];
+  t.classList.toggle("playing", !a.paused);
+}
 
 async function toggle(i){
-  const a = tracks[i];
+  const a=tracks[i];
   try{
-    if (a.paused){
+    if(a.paused){
       await a.play();
-    } else {
+    }else{
       a.pause();
     }
     sync(i);
-  } catch(e){
+  }catch(e){
     console.warn(e);
   }
 }
 
-    triggers.forEach(t => {
-      t.addEventListener("click", () => toggle(Number(t.dataset.i)));
-    });
+triggers.forEach(t=>{
+  t.addEventListener("click",()=>toggle(Number(t.dataset.i)));
+});
 
-    // 外部要因で変化してもUI同期
-    tracks.forEach((a, i) => {
-      a.addEventListener("play",  () => sync(i));
-      a.addEventListener("pause", () => sync(i));
-      sync(i);
-    });
-  </script>
+tracks.forEach((a,i)=>{
+  a.addEventListener("play",()=>sync(i));
+  a.addEventListener("pause",()=>sync(i));
+  sync(i);
+});
+
+</script>
 </body>
 </html>
